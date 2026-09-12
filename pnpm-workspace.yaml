@@ -1,0 +1,12 @@
+allowBuilds:
+  better-sqlite3: true
+  electron: true
+  electron-winstaller: true
+  esbuild: true
+  onnxruntime-node: true
+  protobufjs: true
+  sharp: true
+  vue-demi: true
+confirmModulesPurge: false
+# electron-builder 26 的收集器调用 PATH 中的 pnpm 11.11；允许 pnpm 11 小版本差异。
+pmOnFail: warn

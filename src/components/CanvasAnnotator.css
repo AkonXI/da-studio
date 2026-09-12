@@ -1,0 +1,537 @@
+:root {
+  --da-annotator-bg: transparent;
+  --da-annotator-text: #1f2937;
+  --da-annotator-muted: #6b7280;
+  --da-annotator-subtle: #d1d5db;
+  --da-annotator-panel-bg: #ffffff;
+  --da-annotator-canvas-bg: #ffffff;
+  --da-annotator-border: #e5e7eb;
+  --da-annotator-border-strong: #d1d5db;
+  --da-annotator-divider: #e5e7eb;
+  --da-annotator-tool-bg: #f9fafb;
+  --da-annotator-tool-fg: #6b7280;
+  --da-annotator-tool-hover-bg: #e5e7eb;
+  --da-annotator-tool-active-bg: #d1d5db;
+  --da-annotator-selected-bg: #dbeafe;
+  --da-annotator-selected-border: #60a5fa;
+  --da-annotator-selected-fg: #1d4ed8;
+  --da-annotator-mode-selected-bg: #e5e7eb;
+  --da-annotator-mode-selected-border: #9ca3af;
+  --da-annotator-group-selected-border: #1f2937;
+  --da-annotator-action-fg: #ffffff;
+  --da-annotator-primary-bg: #1d4ed8;
+  --da-annotator-primary-hover-bg: #1e40af;
+  --da-annotator-primary-border: #1e40af;
+  --da-annotator-primary-disabled-bg: #93c5fd;
+  --da-annotator-danger-bg: #b91c1c;
+  --da-annotator-danger-hover-bg: #991b1b;
+  --da-annotator-danger-border: #7f1d1d;
+  --da-annotator-danger-soft-bg: #fef2f2;
+  --da-annotator-danger-soft-fg: #b91c1c;
+  --da-annotator-danger-soft-border: #fecaca;
+  --da-annotator-list-title: #111827;
+  --da-annotator-shape-title: #1d4ed8;
+  --da-annotator-shape-angle: #dc2626;
+  --da-annotator-shape-editing: #f97316;
+  --da-annotator-shape-border: #f3f4f6;
+  --da-annotator-shape-hover-bg: #f9fafb;
+}
+
+.da-annotator {
+  position: relative;
+  color: var(--da-annotator-text);
+  min-width: 0;
+}
+
+.da-visibility-toast {
+  position: absolute;
+  z-index: 80;
+  top: 14px;
+  left: 50%;
+  max-width: calc(100% - 32px);
+  padding: 8px 13px;
+  border: 1px solid color-mix(in srgb, var(--da-annotator-text) 14%, transparent);
+  border-radius: 7px;
+  color: var(--da-annotator-panel-bg);
+  background: color-mix(in srgb, var(--da-annotator-text) 92%, transparent);
+  box-shadow: 0 8px 22px rgb(15 23 42 / 18%);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+  pointer-events: none;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.da-toast-enter-active,
+.da-toast-leave-active {
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.da-toast-enter-from,
+.da-toast-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -6px);
+}
+
+.da-workbench {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--da-annotator-panel-bg);
+  box-shadow: 0 18px 46px rgba(22, 28, 22, 0.1);
+}
+
+.da-workbench-body {
+  height: 0;
+  flex: 1 1 0;
+  min-width: 720px;
+  min-height: 360px;
+}
+
+.da-main-toolbar {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.da-label-panel {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  max-height: 100%;
+}
+
+.da-annotation-list {
+  height: 100%;
+  scrollbar-gutter: stable;
+}
+
+.da-canvas-stage canvas {
+  display: block;
+}
+
+.da-canvas-stage {
+  min-width: 420px;
+  min-height: 360px;
+}
+
+.da-canvas-toolstrip {
+  position: absolute;
+  z-index: 30;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: calc(100% - 20px);
+  padding: 5px;
+  border: 1px solid var(--da-annotator-border-strong);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--da-annotator-panel-bg) 92%, transparent);
+  box-shadow: 0 8px 22px rgba(18, 23, 18, 0.12);
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
+
+.da-canvas-toolstrip button {
+  height: 27px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--da-annotator-muted);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.da-canvas-toolstrip button:hover,
+.da-canvas-toolstrip button.active {
+  color: var(--da-annotator-selected-fg);
+  background: var(--da-annotator-selected-bg);
+}
+
+.da-canvas-toolstrip button:disabled {
+  opacity: 0.32;
+  cursor: not-allowed;
+}
+
+.da-canvas-toolstrip button:disabled:hover {
+  color: var(--da-annotator-muted);
+  background: transparent;
+}
+
+.da-mask-toolstrip {
+  transform: none;
+  touch-action: none;
+}
+
+.da-canvas-toolstrip .da-mask-tool-button,
+.da-canvas-toolstrip .da-aux-tool-button,
+.da-canvas-toolstrip .da-toolstrip-grip {
+  width: 30px;
+  flex: 0 0 30px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.da-canvas-toolstrip .da-toolstrip-grip {
+  width: 22px;
+  flex-basis: 22px;
+  color: var(--da-annotator-subtle);
+  cursor: grab;
+}
+
+.da-canvas-toolstrip .da-toolstrip-grip:active {
+  cursor: grabbing;
+}
+
+.da-brush-size {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 4px;
+  padding-left: 8px;
+  border-left: 1px solid var(--da-annotator-divider);
+  color: var(--da-annotator-muted);
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+}
+
+.da-brush-size input {
+  width: 70px;
+  accent-color: var(--da-annotator-primary-bg);
+}
+
+.da-toolstrip-hint {
+  padding: 0 6px;
+  color: var(--da-annotator-shape-editing);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.da-statusbar {
+  height: 36px;
+  flex: 0 0 36px;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid var(--da-annotator-border);
+  color: var(--da-annotator-muted);
+  background: var(--da-annotator-panel-bg);
+  font-size: 11px;
+  overflow: visible;
+}
+
+.da-statusbar-item,
+.da-statusbar-mode,
+.da-statusbar-coordinates {
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+}
+
+.da-statusbar-item strong {
+  color: var(--da-annotator-text);
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+}
+
+.da-statusbar-item i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.da-shape-count {
+  min-width: 22px;
+  height: 18px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--da-annotator-muted);
+  background: var(--da-annotator-tool-hover-bg);
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+}
+
+.da-list-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.da-list-filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 8px;
+  border-bottom: 1px solid var(--da-annotator-shape-border);
+}
+
+.da-list-filters select {
+  min-width: 0;
+  height: 28px;
+  padding: 0 22px 0 7px;
+  border: 1px solid var(--da-annotator-border-strong);
+  border-radius: 6px;
+  color: var(--da-annotator-text);
+  background: var(--da-annotator-tool-bg);
+  font-size: 10px;
+  outline: none;
+}
+
+.da-list-filters select:focus {
+  border-color: var(--da-annotator-selected-border);
+}
+
+.da-visibility-button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  color: var(--da-annotator-muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.da-visibility-button:hover:not(:disabled) {
+  color: var(--da-annotator-text);
+  background: var(--da-annotator-tool-hover-bg);
+}
+
+.da-visibility-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.da-visibility-button svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.da-shape-visibility {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+.da-shape-hidden {
+  opacity: 0.5;
+}
+
+.da-statusbar-spacer {
+  flex: 1;
+}
+
+.da-status-tools {
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 4px;
+}
+
+.da-status-tool {
+  width: 30px;
+  height: 28px;
+  flex: 0 0 30px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  color: var(--da-annotator-muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.da-status-tool:hover,
+.da-status-tool.active {
+  color: var(--da-annotator-text);
+  background: var(--da-annotator-tool-hover-bg);
+}
+
+.da-status-tool:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.da-status-tool:disabled:hover {
+  color: var(--da-annotator-muted);
+  background: transparent;
+}
+
+.da-status-tool.active {
+  color: var(--da-annotator-selected-fg);
+  background: var(--da-annotator-selected-bg);
+}
+
+.da-status-tool svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.da-rotation-value {
+  min-width: 27px;
+  color: var(--da-annotator-text);
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  text-align: center;
+}
+
+.da-statusbar-mode {
+  color: var(--da-annotator-text);
+  font-weight: 700;
+}
+
+.da-statusbar-coordinates {
+  min-width: 170px;
+  justify-content: center;
+  border-right: 0;
+  color: var(--da-annotator-text);
+  font-family: ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.da-statusbar-coordinates strong {
+  color: var(--da-annotator-muted);
+  font-weight: 600;
+}
+
+.da-fit-image-button {
+  width: 30px;
+  height: 28px;
+  flex: 0 0 30px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  color: var(--da-annotator-muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.da-fit-image-button:hover {
+  color: var(--da-annotator-text);
+  background: var(--da-annotator-tool-hover-bg);
+}
+
+.da-fit-image-button svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linejoin: round;
+}
+
+.da-image-adjust {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.da-image-adjust-trigger {
+  width: 32px;
+  height: 28px;
+  margin-left: 4px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  color: var(--da-annotator-muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.da-image-adjust-trigger:hover,
+.da-image-adjust-trigger.active {
+  color: var(--da-annotator-text);
+  background: var(--da-annotator-tool-hover-bg);
+}
+
+.da-image-adjust-trigger svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.da-image-adjust-popover {
+  position: absolute;
+  left: 4px;
+  bottom: calc(100% + 8px);
+  z-index: 50;
+  width: 244px;
+  padding: 12px;
+  border: 1px solid var(--da-annotator-border-strong);
+  border-radius: 8px;
+  background: var(--da-annotator-panel-bg);
+  box-shadow: 0 10px 28px rgb(15 23 42 / 18%);
+}
+
+.da-image-adjust-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 9px;
+  color: var(--da-annotator-text);
+  font-size: 12px;
+}
+
+.da-reset-textbtn {
+  padding: 2px 4px;
+  border: 0;
+  color: var(--da-annotator-primary-bg);
+  background: transparent;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.da-image-adjust-popover label {
+  height: 30px;
+  display: grid;
+  grid-template-columns: 42px 1fr 38px;
+  align-items: center;
+  gap: 8px;
+  color: var(--da-annotator-muted);
+}
+
+.da-image-adjust-popover input {
+  width: 100%;
+  accent-color: var(--da-annotator-primary-bg);
+}
+
+.da-image-adjust-popover b {
+  color: var(--da-annotator-text);
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 500;
+  text-align: right;
+}

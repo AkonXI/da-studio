@@ -1,0 +1,5 @@
+export { matchTrajectory } from './matcher'
+export { resample } from './resample'
+export { computeBBox, computeOBB } from './bbox'
+export { dist2, dist } from './geometry'
+export type { BBox, OBB, MatchResult, MatcherOptions } from './types'
